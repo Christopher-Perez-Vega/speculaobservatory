@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPECULA — Alphabet Inc. (GOOG/GOOGL) Intrinsic Valuation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --specula-deep:#162a47;        /* deep midnight blue — primary ink */
+  --specula-deep-2:#1f3a5f;      /* slightly lifted deep blue */
+  --specula-sky:#5b9bd5;         /* breathing sky-blue accent */
+  --specula-sky-soft:#9cc3e6;    /* soft sky for fills */
+  --specula-slate:#5a6473;       /* strong but not-too-dark grey */
+  --specula-slate-soft:#8a93a1;  /* secondary grey */
+  --specula-taupe:#8c7d6e;       /* taupe — warm brown-grey accent */
+  --specula-taupe-soft:#c9bfb2;  /* soft taupe */
+  --specula-taupe-bg:#efe9e0;    /* taupe wash for story column */
+  --bone:#f7f4ee;                /* bone white background */
+  --bone-2:#fbf9f5;              /* lifted bone for cards */
+  --rule:#ddd6ca;                /* hairline rule */
+  --pos:#2f6d52;                 /* positive figure */
+  --neg:#a14637;                 /* negative figure */
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+
+body{
+  background:var(--bone);
+  color:var(--specula-deep);
+  font-family:'Spectral',Georgia,serif;
+  font-weight:400;
+  font-size:17px;
+  line-height:1.7;
+  /* faint grain texture */
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(22,42,71,0.025) 1px, transparent 0);
+  background-size:18px 18px;
+}
+
+.page{
+  max-width:1040px;
+  margin:0 auto;
+  padding:0 40px 80px;
+}
+
+/* ============ MASTHEAD ============ */
+.masthead{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  padding:38px 0 18px;
+  border-bottom:2.5px solid var(--specula-deep);
+  margin-bottom:0;
+}
+.brand{display:flex;flex-direction:column;gap:2px}
+.brand .wordmark{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:34px;
+  letter-spacing:0.22em;
+  color:var(--specula-deep);
+  line-height:1;
+  padding-left:0.22em;
+}
+.brand .tagline{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  letter-spacing:0.34em;
+  text-transform:uppercase;
+  color:var(--specula-taupe);
+  padding-left:0.3em;
+}
+.masthead .meta{
+  text-align:right;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--specula-slate);
+  line-height:1.9;
+}
+.masthead .meta .tick{color:var(--specula-deep);font-weight:600}
+
+/* thin accent rule under masthead */
+.accent-rule{
+  height:3px;
+  background:linear-gradient(90deg,var(--specula-sky) 0%, var(--specula-sky) 22%, var(--specula-taupe) 22%, var(--specula-taupe) 30%, transparent 30%);
+  margin-bottom:40px;
+}
+
+/* ============ TITLE BLOCK ============ */
+.titleblock{margin-bottom:14px}
+.kicker{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.28em;
+  text-transform:uppercase;
+  color:var(--specula-sky);
+  margin-bottom:14px;
+}
+h1{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:52px;
+  line-height:1.05;
+  letter-spacing:-0.015em;
+  color:var(--specula-deep);
+  margin-bottom:8px;
+}
+h1 .sub{
+  display:block;
+  font-size:23px;
+  font-weight:400;
+  font-style:italic;
+  color:var(--specula-slate);
+  letter-spacing:0;
+  margin-top:10px;
+}
+
+/* ============ VERDICT STRIP ============ */
+.verdict{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:0;
+  margin:34px 0 44px;
+  border:1px solid var(--rule);
+  background:var(--bone-2);
+}
+.verdict .cell{
+  padding:20px 22px;
+  border-right:1px solid var(--rule);
+}
+.verdict .cell:last-child{border-right:none}
+.verdict .label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9.5px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--specula-slate-soft);
+  margin-bottom:8px;
+}
+.verdict .figure{
+  font-family:'Fraunces',serif;
+  font-size:30px;
+  font-weight:600;
+  line-height:1;
+  color:var(--specula-deep);
+}
+.verdict .figure.accent{color:var(--specula-sky)}
+.verdict .figure.pos{color:var(--pos)}
+.verdict .note{
+  font-size:12.5px;
+  color:var(--specula-slate);
+  margin-top:6px;
+  font-style:italic;
+}
+
+/* ============ BODY PROSE ============ */
+.lede{
+  font-size:21px;
+  line-height:1.6;
+  color:var(--specula-deep-2);
+  font-weight:400;
+  margin-bottom:26px;
+}
+.lede .drop{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+}
+section{margin-bottom:40px}
+section > p{margin-bottom:16px;color:#28324a}
+section > p .em{color:var(--specula-deep);font-weight:500;font-style:italic}
+
+h2{
+  font-family:'Fraunces',serif;
+  font-size:15px;
+  font-weight:600;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--specula-deep);
+  margin:0 0 18px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--rule);
+  display:flex;
+  align-items:baseline;
+  gap:12px;
+}
+h2 .num{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  color:var(--specula-taupe);
+  letter-spacing:0.1em;
+}
+
+/* ============ DAMODARAN TABLE ============ */
+.dmod{
+  border:1.5px solid var(--specula-deep);
+  background:var(--bone-2);
+  margin:8px 0 10px;
+  font-family:'IBM Plex Mono',monospace;
+}
+.dmod-band{
+  background:var(--specula-deep);
+  color:var(--bone);
+  font-family:'Fraunces',serif;
+  font-style:italic;
+  font-weight:500;
+  font-size:15px;
+  letter-spacing:0.04em;
+  text-align:center;
+  padding:8px 0;
+}
+.dmod table{width:100%;border-collapse:collapse}
+.dmod th,.dmod td{
+  font-size:12px;
+  padding:7px 10px;
+  text-align:right;
+  border-bottom:1px solid var(--rule);
+  border-right:1px solid var(--rule);
+  white-space:nowrap;
+}
+.dmod th{
+  font-family:'Fraunces',serif;
+  font-style:italic;
+  font-weight:500;
+  font-size:12.5px;
+  color:var(--specula-deep);
+  background:var(--bone);
+  text-align:center;
+}
+.dmod td.row-lbl,.dmod th.row-lbl{
+  text-align:left;
+  font-family:'Spectral',serif;
+  font-style:normal;
+  color:var(--specula-deep);
+  font-weight:500;
+  font-size:13px;
+}
+.dmod td.story{
+  text-align:left;
+  font-family:'Spectral',serif;
+  font-size:12px;
+  line-height:1.35;
+  color:var(--specula-deep-2);
+  background:var(--specula-taupe-bg);
+  white-space:normal;
+  font-style:italic;
+  border-right:none;
+}
+.dmod td:last-child,.dmod th:last-child{border-right:none}
+.dmod tr:last-child td{border-bottom:none}
+.dmod .neg{color:var(--neg)}
+.dmod .pos{color:var(--pos)}
+.dmod .hl-band td{background:rgba(91,155,213,0.07)}
+
+/* The Value section — inverted dark homage to Damodaran black cells */
+.dmod-value{
+  border:1.5px solid var(--specula-deep);
+  border-top:none;
+  margin:0 0 10px;
+  font-family:'IBM Plex Mono',monospace;
+}
+.dmod-value table{width:100%;border-collapse:collapse}
+.dmod-value td{
+  font-size:12.5px;
+  padding:8px 14px;
+  border-bottom:1px solid var(--specula-deep-2);
+}
+.dmod-value td.vlbl{
+  text-align:left;
+  font-family:'Spectral',serif;
+  color:var(--bone);
+  width:62%;
+}
+.dmod-value td.vfig{
+  text-align:right;
+  color:var(--bone);
+  font-weight:600;
+}
+.dmod-value tr{background:var(--specula-deep)}
+.dmod-value tr.final{background:var(--specula-deep-2)}
+.dmod-value tr.final td{
+  font-size:15px;
+  padding:12px 14px;
+  border-bottom:none;
+}
+.dmod-value tr.final td.vfig{
+  color:var(--specula-sky-soft);
+  font-family:'Fraunces',serif;
+  font-size:20px;
+}
+.dmod-value .aside{
+  color:var(--specula-taupe-soft);
+  font-family:'Spectral',serif;
+  font-style:italic;
+  font-size:11.5px;
+}
+
+.caption{
+  font-size:11.5px;
+  color:var(--specula-slate);
+  font-style:italic;
+  margin-top:6px;
+  padding-left:2px;
+}
+
+/* ============ SENSITIVITY / REVERSE DCF ============ */
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:8px}
+.panel{
+  border:1px solid var(--rule);
+  background:var(--bone-2);
+  padding:22px 24px;
+}
+.panel h3{
+  font-family:'Fraunces',serif;
+  font-size:16px;
+  font-weight:600;
+  color:var(--specula-deep);
+  margin-bottom:4px;
+}
+.panel .ph-note{
+  font-size:12.5px;
+  color:var(--specula-slate);
+  font-style:italic;
+  margin-bottom:16px;
+}
+.sens-table{width:100%;border-collapse:collapse;font-family:'IBM Plex Mono',monospace}
+.sens-table td{
+  padding:9px 6px;
+  border-bottom:1px solid var(--rule);
+  font-size:13px;
+}
+.sens-table tr:last-child td{border-bottom:none}
+.sens-table .wacc{color:var(--specula-slate);text-align:left}
+.sens-table .ivps{text-align:right;font-weight:600;color:var(--specula-deep)}
+.sens-table .bar-cell{width:46%;padding-left:14px}
+.bar{
+  height:9px;
+  background:var(--specula-sky);
+  border-radius:1px;
+  display:inline-block;
+  vertical-align:middle;
+}
+.sens-table tr.base td{background:rgba(91,155,213,0.1)}
+.sens-table tr.base .ivps{color:var(--specula-sky)}
+.sens-table tr.base .bar{background:var(--specula-deep)}
+.sens-table tr.mkt .ivps{color:var(--specula-taupe)}
+.sens-table tr.mkt .bar{background:var(--specula-taupe)}
+
+.rdcf-figure{
+  font-family:'Fraunces',serif;
+  font-size:42px;
+  font-weight:600;
+  color:var(--specula-sky);
+  line-height:1;
+  margin:6px 0 2px;
+}
+.rdcf-sub{font-size:13px;color:var(--specula-slate);font-style:italic;margin-bottom:18px}
+.rdcf-row{
+  display:flex;
+  justify-content:space-between;
+  padding:8px 0;
+  border-bottom:1px solid var(--rule);
+  font-size:13.5px;
+}
+.rdcf-row:last-child{border-bottom:none}
+.rdcf-row .k{color:var(--specula-slate)}
+.rdcf-row .v{font-family:'IBM Plex Mono',monospace;color:var(--specula-deep);font-weight:500}
+
+/* ============ KEY ASSUMPTIONS LIST ============ */
+.risks li{
+  list-style:none;
+  padding:14px 0 14px 0;
+  border-bottom:1px solid var(--rule);
+  display:grid;
+  grid-template-columns:160px 1fr;
+  gap:20px;
+}
+.risks li:last-child{border-bottom:none}
+.risks .rk{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--specula-taupe);
+  padding-top:2px;
+}
+.risks .rv{color:#28324a;font-size:15px}
+
+/* ============ FOOTER ============ */
+.colophon{
+  margin-top:56px;
+  padding-top:24px;
+  border-top:2.5px solid var(--specula-deep);
+}
+.colophon .meth{
+  font-size:12px;
+  line-height:1.65;
+  color:var(--specula-slate);
+  margin-bottom:18px;
+}
+.colophon .meth strong{color:var(--specula-deep);font-weight:600}
+.colophon .disc{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9.5px;
+  line-height:1.7;
+  letter-spacing:0.04em;
+  color:var(--specula-slate-soft);
+  text-transform:uppercase;
+}
+.colophon .sign{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:20px;
+}
+.colophon .sign .wm{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:16px;
+  letter-spacing:0.2em;
+  color:var(--specula-deep);
+}
+.colophon .sign .yr{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  letter-spacing:0.2em;
+  color:var(--specula-taupe);
+}
+
+@media print{
+  body{background:#fff;background-image:none}
+  .page{max-width:none}
+  .dmod-value tr,.dmod-band{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@media (max-width:760px){
+  .verdict{grid-template-columns:repeat(2,1fr)}
+  .verdict .cell:nth-child(2){border-right:none}
+  .twocol{grid-template-columns:1fr}
+  h1{font-size:38px}
+  .dmod{overflow-x:auto}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- MASTHEAD -->
+  <div class="masthead">
+    <div class="brand">
+      <div class="wordmark">SPECULA</div>
+      <div class="tagline">Intrinsic Valuation &amp; Research</div>
+    </div>
+    <div class="meta">
+      <div><span class="tick">GOOG / GOOGL</span></div>
+      <div>NASDAQ</div>
+      <div>June 2026</div>
+    </div>
+  </div>
+  <div class="accent-rule"></div>
+
+  <!-- TITLE -->
+  <div class="titleblock">
+    <div class="kicker">DCF · Intrinsic Valuation</div>
+    <h1>Alphabet Inc.
+      <span class="sub">The disruption platform rolls on — funding a generational compute build-out</span>
+    </h1>
+  </div>
+
+  <!-- VERDICT STRIP -->
+  <div class="verdict">
+    <div class="cell">
+      <div class="label">Intrinsic Value / Share</div>
+      <div class="figure accent">$399</div>
+      <div class="note">Base case</div>
+    </div>
+    <div class="cell">
+      <div class="label">Market Price</div>
+      <div class="figure">$358</div>
+      <div class="note">At valuation date</div>
+    </div>
+    <div class="cell">
+      <div class="label">Upside to Intrinsic</div>
+      <div class="figure pos">+11%</div>
+      <div class="note">Modest, not extreme</div>
+    </div>
+    <div class="cell">
+      <div class="label">Verdict</div>
+      <div class="figure" style="font-size:24px">Undervalued</div>
+      <div class="note">Hinges on terminal WACC</div>
+    </div>
+  </div>
+
+  <!-- LEDE -->
+  <p class="lede"><span class="drop">Alphabet is a primary leader</span> of the AI revolution — across language models and their applications, and across the physical compute infrastructure underneath them. Growth and reinvestment estimates follow Alphabet's own roadmap alongside analyst consensus, which is why free cash flow turns negative for three years: the cause is <span style="font-style:italic">peak reinvestment, not operating losses</span>. We expect high profit margins — on EBIT adjusted for R&D and leases — to hold near 40%.</p>
+
+  <!-- NARRATIVE -->
+  <section>
+    <h2><span class="num">01</span> The Investment Thesis</h2>
+    <p>The central question for Alphabet is not whether it can grow, but how much capital it must consume to defend and extend its position through the AI infrastructure super-cycle — and whether the returns on that capital justify the spend. Management has guided to capital expenditure of roughly <span class="em">$175–185 billion for 2026</span>, with sell-side consensus extending toward $228 billion in 2027 and $241 billion in 2028. Layered with an upward adjustment for capitalized R&D, this produces reinvestment of approximately $184bn, $217bn and $256bn across the first three years — the heart of the build-out.</p>
+    <p>That intensity is temporary by design. The reinvestment path is calibrated to a low sales-to-capital ratio of 0.5 during the 2026–2028 peak, recovering toward the software-and-internet sector norm of 2.0 as the build-out digests and the installed asset base begins to monetize. The result is a reinvestment profile that consumes more than operating profit early — driving negative FCFF in years one through three — before inflecting sharply positive as growth decelerates and capital efficiency normalizes.</p>
+    <p>On the financing side, Alphabet has just priced an <span class="em">$84.75 billion equity capital raise</span> to fund this compute expansion — upsized from an initial $80bn target. The structure spans underwritten common stock, a $40bn at-the-market program, $15bn of mandatory convertible preferred, and a $10bn private placement to Berkshire Hathaway. This valuation reflects the resulting dilution in a fully-diluted share count of 12,420 million, while holding operating asset value unchanged: the proceeds fund the capex plan already modeled, rather than an incremental one.</p>
+  </section>
+
+  <!-- DAMODARAN MODEL -->
+  <section>
+    <h2><span class="num">02</span> The Valuation Model</h2>
+
+    <!-- ASSUMPTIONS -->
+    <div class="dmod">
+      <div class="dmod-band">The Assumptions</div>
+      <table>
+        <tr>
+          <th class="row-lbl"></th>
+          <th>Base year</th>
+          <th>Next year</th>
+          <th>Years 2&ndash;5</th>
+          <th>Years 6&ndash;10</th>
+          <th>After year 10</th>
+          <th style="text-align:left;width:30%">Link to story</th>
+        </tr>
+        <tr>
+          <td class="row-lbl">Revenues (a)</td>
+          <td>$422,566</td><td>20.9%</td><td>18.0%</td><td>Changes to</td><td>4.37%</td>
+          <td class="story">Search, Cloud and AI products compound near-20% short-term; growth decays to the risk-free rate at maturity.</td>
+        </tr>
+        <tr>
+          <td class="row-lbl">Operating margin (b)</td>
+          <td>39.97%</td><td>40.0%</td><td>Moves to</td><td>40.0%</td><td>40.0%</td>
+          <td class="story">A durable moat — search distribution, data, an integrated AI stack — holds margins near 40% on R&amp;D- and lease-adjusted EBIT.</td>
+        </tr>
+        <tr>
+          <td class="row-lbl">Tax rate</td>
+          <td>17.0%</td><td>17.0%</td><td>17.0%</td><td>Changes to</td><td>24.0%</td>
+          <td class="story">Currently benefits from a low effective rate; normalizes toward the U.S. marginal rate over the second decade.</td>
+        </tr>
+        <tr>
+          <td class="row-lbl">Sales to capital (c)</td>
+          <td></td><td>0.50</td><td>0.50</td><td>2.00</td><td>20.81%<span style="color:var(--specula-slate-soft)"> reinv.</span></td>
+          <td class="story">The AI infrastructure super-cycle demands heavy upfront capital (0.5); efficiency recovers toward the sector norm (2.0) post-2028.</td>
+        </tr>
+        <tr>
+          <td class="row-lbl">Return on capital</td>
+          <td>21.31%</td><td colspan="3" style="text-align:center;font-style:italic;color:var(--specula-slate)">Marginal ROIC = 25.76%</td><td>21.0%</td>
+          <td class="story">Sustained ~12pp above the cost of capital at maturity — a strong but not extreme excess return, consistent with the moat.</td>
+        </tr>
+        <tr>
+          <td class="row-lbl">Cost of capital (d)</td>
+          <td></td><td colspan="2" style="text-align:center">9.46%</td><td style="text-align:center">9.27% &rarr; 8.60%</td><td>8.60%</td>
+          <td class="story">Beta converges toward 1 and ERP toward 4.5% from year 6; WACC declines to the U.S. mature-company average.</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- CASH FLOWS -->
+    <div class="dmod">
+      <div class="dmod-band">The Cash Flows</div>
+      <table>
+        <tr>
+          <th class="row-lbl">Year</th>
+          <th>Revenues</th>
+          <th>Op. margin</th>
+          <th>EBIT</th>
+          <th>EBIT (1&ndash;t)</th>
+          <th>Reinvestment</th>
+          <th>FCFF</th>
+        </tr>
+        <tr><td class="row-lbl">1</td><td>$510,756</td><td>40.0%</td><td>$204,302</td><td>$169,571</td><td>$183,872</td><td class="neg">&minus;$14,301</td></tr>
+        <tr><td class="row-lbl">2</td><td>$602,692</td><td>40.0%</td><td>$241,077</td><td>$200,094</td><td>$216,969</td><td class="neg">&minus;$16,875</td></tr>
+        <tr><td class="row-lbl">3</td><td>$711,176</td><td>40.0%</td><td>$284,470</td><td>$236,110</td><td>$256,023</td><td class="neg">&minus;$19,913</td></tr>
+        <tr><td class="row-lbl">4</td><td>$839,188</td><td>40.0%</td><td>$335,675</td><td>$278,610</td><td>$215,791</td><td class="pos">$62,819</td></tr>
+        <tr><td class="row-lbl">5</td><td>$990,241</td><td>40.0%</td><td>$396,097</td><td>$328,760</td><td>$168,055</td><td class="pos">$160,705</td></tr>
+        <tr><td class="row-lbl">6</td><td>$1,141,491</td><td>40.0%</td><td>$456,596</td><td>$372,583</td><td>$95,490</td><td class="pos">$277,093</td></tr>
+        <tr><td class="row-lbl">7</td><td>$1,284,725</td><td>40.0%</td><td>$513,890</td><td>$412,140</td><td>$63,093</td><td class="pos">$349,047</td></tr>
+        <tr><td class="row-lbl">8</td><td>$1,410,911</td><td>40.0%</td><td>$564,364</td><td>$444,719</td><td>$50,059</td><td class="pos">$394,660</td></tr>
+        <tr><td class="row-lbl">9</td><td>$1,511,029</td><td>40.0%</td><td>$604,412</td><td>$467,815</td><td>$33,016</td><td class="pos">$434,799</td></tr>
+        <tr><td class="row-lbl">10</td><td>$1,577,061</td><td>40.0%</td><td>$630,824</td><td>$479,427</td><td>$34,459</td><td class="pos">$444,968</td></tr>
+        <tr class="hl-band"><td class="row-lbl">Terminal</td><td>$1,645,979</td><td>40.0%</td><td>$658,391</td><td>$500,378</td><td>$104,126</td><td class="pos">$396,251</td></tr>
+      </table>
+    </div>
+    <p class="caption">All figures in US$ millions except per-share and percentage data. Negative FCFF in years 1–3 reflects peak reinvestment intensity, not operating weakness — EBIT remains strongly positive throughout.</p>
+
+    <!-- THE VALUE -->
+    <div class="dmod-band" style="border:1.5px solid var(--specula-deep);border-bottom:none">The Value</div>
+    <div class="dmod-value">
+      <table>
+        <tr><td class="vlbl">Terminal value</td><td class="vfig">$9,367,644</td></tr>
+        <tr><td class="vlbl">PV (terminal value)</td><td class="vfig">$3,885,451</td></tr>
+        <tr><td class="vlbl">PV (cash flows, next 10 years)</td><td class="vfig">$1,025,118</td></tr>
+        <tr><td class="vlbl">Value of operating assets</td><td class="vfig">$4,910,569</td></tr>
+        <tr><td class="vlbl">Adjustment for distress <span class="aside">probability of failure = 0.00%</span></td><td class="vfig">$0</td></tr>
+        <tr><td class="vlbl">&minus; Debt &amp; minority interests</td><td class="vfig">$80,740</td></tr>
+        <tr><td class="vlbl">+ Cash &amp; non-operating assets</td><td class="vfig">$126,840</td></tr>
+        <tr><td class="vlbl">Value of equity</td><td class="vfig">$4,956,669</td></tr>
+        <tr><td class="vlbl">&minus; Value of equity options</td><td class="vfig">$0</td></tr>
+        <tr><td class="vlbl">Number of shares <span class="aside">fully diluted, post-raise</span></td><td class="vfig">12,420</td></tr>
+        <tr class="final"><td class="vlbl">Value per share</td><td class="vfig">$399.09</td></tr>
+      </table>
+    </div>
+    <p class="caption">Market price at valuation date: $358.39. Implied upside to intrinsic value: approximately 11%.</p>
+  </section>
+
+  <!-- WHERE THE THESIS LIVES -->
+  <section>
+    <h2><span class="num">03</span> Where the Thesis Lives &amp; Dies</h2>
+    <p>With a terminal cost of capital of 8.60% and terminal growth anchored to the 4.37% risk-free rate, the valuation now sits in the region where the value is highly sensitive to the spread between the two.</p>
+
+    <div class="twocol">
+      <div class="panel">
+        <h3>Terminal WACC Sensitivity</h3>
+        <p class="ph-note">How intrinsic value per share moves with the terminal cost of capital, holding all else constant.</p>
+        <table class="sens-table">
+          <tr class="base">
+            <td class="wacc">8.60% <span style="font-size:10px">base</span></td>
+            <td class="bar-cell"><span class="bar" style="width:90%"></span></td>
+            <td class="ivps">$399</td>
+          </tr>
+          <tr class="mkt">
+            <td class="wacc">~9.15% <span style="font-size:10px">mkt-implied</span></td>
+            <td class="bar-cell"><span class="bar" style="width:80%"></span></td>
+            <td class="ivps">$358</td>
+          </tr>
+          <tr> 
+            <td class="wacc">9.46%</td>
+            <td class="bar-cell"><span class="bar" style="width:60%"></span></td>
+            <td class="ivps">$340</td>
+          </tr>
+          <tr>
+            <td class="wacc">8.00%</td>
+            <td class="bar-cell"><span class="bar" style="width:100%"></span></td>
+            <td class="ivps">$450</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="panel">
+        <h3>Reverse DCF Cross-Check</h3>
+        <p class="ph-note">The terminal cost of capital the market price implies, given all other base-case inputs.</p>
+        <div class="rdcf-figure">~9.15%</div>
+        <div class="rdcf-sub">terminal WACC implied approximately in the market price of $358</div>
+        <div class="rdcf-row"><span class="k">Our terminal WACC</span><span class="v">8.60%</span></div>
+        <div class="rdcf-row"><span class="k">Market-implied terminal WACC</span><span class="v">~9.15%</span></div>
+        <div class="rdcf-row"><span class="k">Benchmark — Average US mature company</span><span class="v">8.00%</span></div>
+        <div class="rdcf-row"><span class="k">Spread (ROIC − WACC), terminal</span><span class="v">12.4 pp</span></div>
+      </div>
+    </div>
+    <p style="margin-top:22px">The market is discounting a terminal cost of capital of roughly 9.15%. We argue 8.60% is the better estimate, closer to the average of mature US companies and more consistent with the assumptions of sustainable competitive advantage over time.</p>
+  </section>
+
+  <!-- KEY ASSUMPTIONS / RISKS -->
+  <section>
+    <h2><span class="num">04</span> The Sensitive Assumptions</h2>
+    <ul class="risks">
+      <li>
+        <span class="rk">Terminal WACC</span>
+        <span class="rv">The single most consequential input. At an 8.60%–4.37% spread, the terminal value is a convex function of the discount rate; small changes move the per-share value by several dollars.</span>
+      </li>
+      <li>
+        <span class="rk">Terminal Margin</span>
+        <span class="rv">A 40% operating margin sustained to perpetuity is high for a terminal state. Defensible on the strength of the competitive moat. The second point of attack after the discount rate.</span>
+      </li>
+      <li>
+        <span class="rk">Reinvestment Path</span>
+        <span class="rv">The 2026–2028 capex peak is anchored to management guidance and consensus; the recovery in capital efficiency thereafter is the modeled assumption. A slower normalization would defer FCFF and compress value.</span>
+      </li>
+      <li>
+        <span class="rk">Equity Dilution</span>
+        <span class="rv">The $84.75bn raise is captured in the fully-diluted share count. The mandatory convertible preferred converts in ~3 years; capped-call transactions partially offset that dilution, a second-order favorable not separately credited here.</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- COLOPHON -->
+  <div class="colophon">
+    <p class="meth"><strong>Methodology.</strong> Free cash flow to firm (FCFF) discounted at the cost of capital. Stock-based compensation is treated as a non-add-back. Operating leases are capitalized. Equity risk premium of 4.18% (Damodaran, June 1 2026), no separate country-risk premium; levered beta of 1.24, converging toward 1.0 from year 6 alongside an ERP shift toward 4.5%. Terminal growth is anchored to the 4.37% risk-free rate. Reinvestment is governed by a staged sales-to-capital path (0.5 → 2.0). The $84.75bn equity raise is reflected in a fully-diluted share count of 12,420 million; operating asset value is held unchanged on the basis that proceeds fund the modeled capex plan rather than an incremental one.</p>
+    <p class="disc">This document is independent research prepared for informational purposes only. It is not investment advice, nor an offer or solicitation to buy or sell any security. Valuations are estimates based on assumptions that may prove incorrect. SPECULA is not a registered investment adviser. Readers should conduct their own analysis and consult a qualified professional before making investment decisions.</p>
+    <div class="sign">
+      <span class="wm">SPECULA</span>
+      <span class="yr">By Christopher Pérez Vega  · GOOG</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
