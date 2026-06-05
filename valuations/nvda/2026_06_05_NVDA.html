@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPECULA — NVIDIA Corp. (NVDA) Intrinsic Valuation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --specula-deep:#162a47;        /* deep midnight blue — primary ink */
+  --specula-deep-2:#1f3a5f;      /* slightly lifted deep blue */
+  --specula-sky:#5b9bd5;         /* breathing sky-blue accent */
+  --specula-sky-soft:#9cc3e6;    /* soft sky for fills */
+  --specula-slate:#5a6473;       /* strong but not-too-dark grey */
+  --specula-slate-soft:#8a93a1;  /* secondary grey */
+  --specula-taupe:#8c7d6e;       /* taupe — warm brown-grey accent */
+  --specula-taupe-soft:#c9bfb2;  /* soft taupe */
+  --specula-taupe-bg:#efe9e0;    /* taupe wash for story column */
+  --bone:#f7f4ee;                /* bone white background */
+  --bone-2:#fbf9f5;              /* lifted bone for cards */
+  --rule:#ddd6ca;                /* hairline rule */
+  --pos:#2f6d52;                 /* positive figure */
+  --neg:#a14637;                 /* negative figure */
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+
+body{
+  background:var(--bone);
+  color:var(--specula-deep);
+  font-family:'Spectral',Georgia,serif;
+  font-weight:400;
+  font-size:17px;
+  line-height:1.7;
+  /* faint grain texture */
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(22,42,71,0.025) 1px, transparent 0);
+  background-size:18px 18px;
+}
+
+.page{
+  max-width:1040px;
+  margin:0 auto;
+  padding:0 40px 80px;
+}
+
+/* ============ MASTHEAD ============ */
+.masthead{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  padding:38px 0 18px;
+  border-bottom:2.5px solid var(--specula-deep);
+  margin-bottom:0;
+}
+.brand{display:flex;flex-direction:column;gap:2px}
+.brand .wordmark{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:34px;
+  letter-spacing:0.22em;
+  color:var(--specula-deep);
+  line-height:1;
+  padding-left:0.22em;
+}
+.brand .tagline{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  letter-spacing:0.34em;
+  text-transform:uppercase;
+  color:var(--specula-taupe);
+  padding-left:0.3em;
+}
+.masthead .meta{
+  text-align:right;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--specula-slate);
+  line-height:1.9;
+}
+.masthead .meta .tick{color:var(--specula-deep);font-weight:600}
+
+/* thin accent rule under masthead */
+.accent-rule{
+  height:3px;
+  background:linear-gradient(90deg,var(--specula-sky) 0%, var(--specula-sky) 22%, var(--specula-taupe) 22%, var(--specula-taupe) 30%, transparent 30%);
+  margin-bottom:40px;
+}
+
+/* ============ TITLE BLOCK ============ */
+.titleblock{margin-bottom:14px}
+.kicker{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.28em;
+  text-transform:uppercase;
+  color:var(--specula-sky);
+  margin-bottom:14px;
+}
+h1{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:52px;
+  line-height:1.05;
+  letter-spacing:-0.015em;
+  color:var(--specula-deep);
+  margin-bottom:8px;
+}
+h1 .sub{
+  display:block;
+  font-size:23px;
+  font-weight:400;
+  font-style:italic;
+  color:var(--specula-slate);
+  letter-spacing:0;
+  margin-top:10px;
+}
+
+/* ============ VERDICT STRIP ============ */
+.verdict{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:0;
+  margin:34px 0 44px;
+  border:1px solid var(--rule);
+  background:var(--bone-2);
+}
+.verdict .cell{
+  padding:20px 22px;
+  border-right:1px solid var(--rule);
+}
+.verdict .cell:last-child{border-right:none}
+.verdict .label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9.5px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--specula-slate-soft);
+  margin-bottom:8px;
+}
+.verdict .figure{
+  font-family:'Fraunces',serif;
+  font-size:30px;
+  font-weight:600;
+  line-height:1;
+  color:var(--specula-deep);
+}
+.verdict .figure.accent{color:var(--specula-sky)}
+.verdict .figure.pos{color:var(--pos)}
+.verdict .note{
+  font-size:12.5px;
+  color:var(--specula-slate);
+  margin-top:6px;
+  font-style:italic;
+}
+
+/* ============ BODY PROSE ============ */
+.lede{
+  font-size:21px;
+  line-height:1.6;
+  color:var(--specula-deep-2);
+  font-weight:400;
+  margin-bottom:26px;
+}
+.lede .drop{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+}
+section{margin-bottom:40px}
+section > p{margin-bottom:16px;color:#28324a}
+section > p .em{color:var(--specula-deep);font-weight:500;font-style:italic}
+
+h2{
+  font-family:'Fraunces',serif;
+  font-size:15px;
+  font-weight:600;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--specula-deep);
+  margin:0 0 18px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--rule);
+  display:flex;
+  align-items:baseline;
+  gap:12px;
+}
+h2 .num{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  color:var(--specula-taupe);
+  letter-spacing:0.1em;
+}
+
+/* ============ DAMODARAN TABLE ============ */
+.dmod{
+  border:1.5px solid var(--specula-deep);
+  background:var(--bone-2);
+  margin:8px 0 10px;
+  font-family:'IBM Plex Mono',monospace;
+}
+.dmod-band{
+  background:var(--specula-deep);
+  color:var(--bone);
+  font-family:'Fraunces',serif;
+  font-style:italic;
+  font-weight:500;
+  font-size:15px;
+  letter-spacing:0.04em;
+  text-align:center;
+  padding:8px 0;
+}
+.dmod table{width:100%;border-collapse:collapse}
+.dmod th,.dmod td{
+  font-size:12px;
+  padding:7px 10px;
+  text-align:right;
+  border-bottom:1px solid var(--rule);
+  border-right:1px solid var(--rule);
+  white-space:nowrap;
+}
+.dmod th{
+  font-family:'Fraunces',serif;
+  font-style:italic;
+  font-weight:500;
+  font-size:12.5px;
+  color:var(--specula-deep);
+  background:var(--bone);
+  text-align:center;
+}
+.dmod td.row-lbl,.dmod th.row-lbl{
+  text-align:left;
+  font-family:'Spectral',serif;
+  font-style:normal;
+  color:var(--specula-deep);
+  font-weight:500;
+  font-size:13px;
+}
+.dmod td.story{
+  text-align:left;
+  font-family:'Spectral',serif;
+  font-size:12px;
+  line-height:1.35;
+  color:var(--specula-deep-2);
+  background:var(--specula-taupe-bg);
+  white-space:normal;
+  font-style:italic;
+  border-right:none;
+}
+.dmod td:last-child,.dmod th:last-child{border-right:none}
+.dmod tr:last-child td{border-bottom:none}
+.dmod .neg{color:var(--neg)}
+.dmod .pos{color:var(--pos)}
+.dmod .hl-band td{background:rgba(91,155,213,0.07)}
+
+/* The Value section — inverted dark homage to Damodaran black cells */
+.dmod-value{
+  border:1.5px solid var(--specula-deep);
+  border-top:none;
+  margin:0 0 10px;
+  font-family:'IBM Plex Mono',monospace;
+}
+.dmod-value table{width:100%;border-collapse:collapse}
+.dmod-value td{
+  font-size:12.5px;
+  padding:8px 14px;
+  border-bottom:1px solid var(--specula-deep-2);
+}
+.dmod-value td.vlbl{
+  text-align:left;
+  font-family:'Spectral',serif;
+  color:var(--bone);
+  width:62%;
+}
+.dmod-value td.vfig{
+  text-align:right;
+  color:var(--bone);
+  font-weight:600;
+}
+.dmod-value tr{background:var(--specula-deep)}
+.dmod-value tr.final{background:var(--specula-deep-2)}
+.dmod-value tr.final td{
+  font-size:15px;
+  padding:12px 14px;
+  border-bottom:none;
+}
+.dmod-value tr.final td.vfig{
+  color:var(--specula-sky-soft);
+  font-family:'Fraunces',serif;
+  font-size:20px;
+}
+.dmod-value .aside{
+  color:var(--specula-taupe-soft);
+  font-family:'Spectral',serif;
+  font-style:italic;
+  font-size:11.5px;
+}
+
+.caption{
+  font-size:11.5px;
+  color:var(--specula-slate);
+  font-style:italic;
+  margin-top:6px;
+  padding-left:2px;
+}
+
+/* ============ SENSITIVITY / REVERSE DCF ============ */
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:8px}
+.panel{
+  border:1px solid var(--rule);
+  background:var(--bone-2);
+  padding:22px 24px;
+}
+.panel h3{
+  font-family:'Fraunces',serif;
+  font-size:16px;
+  font-weight:600;
+  color:var(--specula-deep);
+  margin-bottom:4px;
+}
+.panel .ph-note{
+  font-size:12.5px;
+  color:var(--specula-slate);
+  font-style:italic;
+  margin-bottom:16px;
+}
+.sens-table{width:100%;border-collapse:collapse;font-family:'IBM Plex Mono',monospace}
+.sens-table td{
+  padding:9px 6px;
+  border-bottom:1px solid var(--rule);
+  font-size:13px;
+}
+.sens-table tr:last-child td{border-bottom:none}
+.sens-table .wacc{color:var(--specula-slate);text-align:left}
+.sens-table .ivps{text-align:right;font-weight:600;color:var(--specula-deep)}
+.sens-table .bar-cell{width:46%;padding-left:14px}
+.bar{
+  height:9px;
+  background:var(--specula-sky);
+  border-radius:1px;
+  display:inline-block;
+  vertical-align:middle;
+}
+.sens-table tr.base td{background:rgba(91,155,213,0.1)}
+.sens-table tr.base .ivps{color:var(--specula-sky)}
+.sens-table tr.base .bar{background:var(--specula-deep)}
+.sens-table tr.mkt .ivps{color:var(--specula-taupe)}
+.sens-table tr.mkt .bar{background:var(--specula-taupe)}
+
+.rdcf-figure{
+  font-family:'Fraunces',serif;
+  font-size:42px;
+  font-weight:600;
+  color:var(--specula-sky);
+  line-height:1;
+  margin:6px 0 2px;
+}
+.rdcf-sub{font-size:13px;color:var(--specula-slate);font-style:italic;margin-bottom:18px}
+.rdcf-row{
+  display:flex;
+  justify-content:space-between;
+  padding:8px 0;
+  border-bottom:1px solid var(--rule);
+  font-size:13.5px;
+}
+.rdcf-row:last-child{border-bottom:none}
+.rdcf-row .k{color:var(--specula-slate)}
+.rdcf-row .v{font-family:'IBM Plex Mono',monospace;color:var(--specula-deep);font-weight:500}
+
+/* ============ KEY ASSUMPTIONS LIST ============ */
+.risks li{
+  list-style:none;
+  padding:14px 0 14px 0;
+  border-bottom:1px solid var(--rule);
+  display:grid;
+  grid-template-columns:160px 1fr;
+  gap:20px;
+}
+.risks li:last-child{border-bottom:none}
+.risks .rk{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--specula-taupe);
+  padding-top:2px;
+}
+.risks .rv{color:#28324a;font-size:15px}
+
+/* ============ FOOTER ============ */
+.colophon{
+  margin-top:56px;
+  padding-top:24px;
+  border-top:2.5px solid var(--specula-deep);
+}
+.colophon .meth{
+  font-size:12px;
+  line-height:1.65;
+  color:var(--specula-slate);
+  margin-bottom:18px;
+}
+.colophon .meth strong{color:var(--specula-deep);font-weight:600}
+.colophon .disc{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9.5px;
+  line-height:1.7;
+  letter-spacing:0.04em;
+  color:var(--specula-slate-soft);
+  text-transform:uppercase;
+}
+.colophon .sign{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:20px;
+}
+.colophon .sign .wm{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:16px;
+  letter-spacing:0.2em;
+  color:var(--specula-deep);
+}
+.colophon .sign .yr{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  letter-spacing:0.2em;
+  color:var(--specula-taupe);
+}
+
+@media print{
+  body{background:#fff;background-image:none}
+  .page{max-width:none}
+  .dmod-value tr,.dmod-band{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@media (max-width:760px){
+  .verdict{grid-template-columns:repeat(2,1fr)}
+  .verdict .cell:nth-child(2){border-right:none}
+  .twocol{grid-template-columns:1fr}
+  h1{font-size:38px}
+  .dmod{overflow-x:auto}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- MASTHEAD -->
+  <div class="masthead">
+    <div class="brand">
+      <div class="wordmark">SPECULA</div>
+      <div class="tagline">Intrinsic Valuation &amp; Research</div>
+    </div>
+    <div class="meta">
+      <div><span class="tick">NVDA</span></div>
+      <div>NASDAQ</div>
+      <div>June 2026</div>
+    </div>
+  </div>
+  <div class="accent-rule"></div>
+
+  <!-- TITLE -->
+  <div class="titleblock">
+    <div class="kicker">DCF · Intrinsic Valuation</div>
+    <h1>NVIDIA Corp.
+      <span class="sub">From hardware monopoly to platform utility — the toll-keeper of global AI compute</span>
+    </h1>
+  </div>
+
+  <!-- VERDICT STRIP -->
+  <div class="verdict">
+    <div class="cell">
+      <div class="label">Intrinsic Value / Share</div>
+      <div class="figure accent">$210</div>
+      <div class="note">Base case</div>
+    </div>
+    <div class="cell">
+      <div class="label">Market Price</div>
+      <div class="figure">$207</div>
+      <div class="note">At valuation date</div>
+    </div>
+    <div class="cell">
+      <div class="label">Upside to Intrinsic</div>
+      <div class="figure pos">+1%</div>
+      <div class="note">Razor-thin spread</div>
+    </div>
+    <div class="cell">
+      <div class="label">Verdict</div>
+      <div class="figure" style="font-size:24px">Fairly Valued</div>
+      <div class="note">Margin of safety is thin</div>
+    </div>
+  </div>
+
+  <!-- LEDE -->
+  <p class="lede"><span class="drop">NVIDIA has become the structural toll-keeper</span> of global AI computing — the indispensable layer beneath every major model and hyperscaler build-out. The thesis turns on its transition from a pure-play fabless hardware designer into a <span style="font-style:italic">platform utility</span>, executing the most aggressive infrastructure monetization cycle in its corporate history. We model revenue scaling above $1.1 trillion by 2036, with the deeply entrenched CUDA software layer preventing absolute margin destruction even as hardware pricing faces competitive pressure.</p>
+
+  <!-- NARRATIVE -->
+  <section>
+    <h2><span class="num">01</span> The Investment Thesis</h2>
+    <p>The core valuation thesis rests on NVIDIA's evolution from a hardware monopoly into a <span class="em">structural toll-keeper of global AI computing</span>. The near-term projections capture an unmatched scaling phase, pushing revenues above the $1.1 trillion mark by 2036. While a trillion-dollar top-line is historically unprecedented, accounting for structural monetary expansion (M2) and long-term inflation over a ten-year horizon — added to NVIDIA's strategic importance in the AI race — brings this figure into a plausible macroeconomic reality.</p>
+    <p>To fuel this growth, the reinvestment profile follows a rational bell-curve trajectory. Net reinvestment peaks rapidly at roughly <span class="em">$52 billion by Year 2</span> to secure supply-chain constraints, foundry capacity and advanced-packaging allocations, with a highly efficient sales-to-capital ratio of 2.0 through the transition years. As the industry matures, return on capital step-downs from an unsustainable 63.6% to a terminal 20.0%. That 20.0% steady-state ROIC is the numerical anchor of the moat: it acknowledges that while hardware margins face pressure from lower-cost custom ASICs and tech-buyer pushback, the entrenched CUDA software layer prevents absolute margin destruction, ensuring structural value creation well above the 8.00% terminal cost of capital.</p>
+    <p>The cash-flow engine is shaped by the convergence of operational and fiscal levers. Operating margins — excluding R&amp;D as an operating expense and adding it to reinvestment — are modeled to decay from 70.0% down to a mature 40.0%, a compression that is mathematically inevitable as high-margin AI training saturates and gives way to competitive AI inference. Simultaneously, the model captures fiscal reality by scaling the effective tax rate from an optimized 16.0% up to a 24.0% domestic and global marginal rate, acknowledging the dilution of R&amp;D tax credits against an immense pre-tax income base.</p>
+  </section>
+
+  <!-- DAMODARAN MODEL -->
+  <section>
+    <h2><span class="num">02</span> The Valuation Model</h2>
+
+    <!-- ASSUMPTIONS -->
+    <div class="dmod">
+      <div class="dmod-band">The Assumptions</div>
+      <table>
+        <tr>
+          <th class="row-lbl"></th>
+          <th>Base year</th>
+          <th>Next year</th>
+          <th>Years 2&ndash;5</th>
+          <th>Years 6&ndash;10</th>
+          <th>After year 10</th>
+          <th style="text-align:left;width:30%">Link to story</th>
+        </tr>
+        <tr>
+          <td class="row-lbl">Revenues (a)</td>
+          <td>$253,491</td><td>45.0%</td><td>42% &rarr; 11%</td><td>Changes to</td><td>4.55%</td>
+          <td class="story">AI-compute demand drives a historic scaling phase; the top-line pushes above $1.1 trillion before growth decays to the risk-free rate at maturity.</td>
+        </tr>
+        <tr>
+          <td class="row-lbl">Operating margin (b)</td>
+          <td>70.55%</td><td>70.0%</td><td>Moves to</td><td>50.0%</td><td>40.0%</td>
+          <td class="story">High-margin AI training (70%) gives way to competitive inference; margins compress to a durable 40%, floored by the CUDA software moat.</td>
+        </tr>
+        <tr>
+          <td class="row-lbl">Tax rate</td>
+          <td>16.0%</td><td>16.0%</td><td>16.0%</td><td>Changes to</td><td>24.0%</td>
+          <td class="story">An optimized 16% effective rate normalizes toward the 24% domestic and global marginal rate as R&amp;D credits dilute against a vast income base.</td>
+        </tr>
+        <tr>
+          <td class="row-lbl">Sales to capital (c)</td>
+          <td></td><td>3.50</td><td>2.00</td><td>2.00</td><td>22.75%<span style="color:var(--specula-slate-soft)"> reinv.</span></td>
+          <td class="story">An efficient sales-to-capital ratio funds supply-chain, foundry and advanced-packaging capacity through the transition years.</td>
+        </tr>
+        <tr>
+          <td class="row-lbl">Return on capital</td>
+          <td>63.60%</td><td colspan="3" style="text-align:center;font-style:italic;color:var(--specula-slate)">Marginal ROIC = 51.71%</td><td>20.0%</td>
+          <td class="story">ROIC step-downs from an unsustainable 63.6% to a terminal 20.0% — the moat anchor, sustained well above the 8% cost of capital.</td>
+        </tr>
+        <tr>
+          <td class="row-lbl">Cost of capital (d)</td>
+          <td></td><td colspan="2" style="text-align:center">9.97%</td><td style="text-align:center">9.97% &rarr; 8.00%</td><td>8.00%</td>
+          <td class="story">WACC declines toward the 8.0% average for mature US companies as the structural platform position de-risks over the second decade.</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- CASH FLOWS -->
+    <div class="dmod">
+      <div class="dmod-band">The Cash Flows</div>
+      <table>
+        <tr>
+          <th class="row-lbl">Year</th>
+          <th>Revenues</th>
+          <th>Op. margin</th>
+          <th>EBIT</th>
+          <th>EBIT (1&ndash;t)</th>
+          <th>Reinvestment</th>
+          <th>FCFF</th>
+        </tr>
+        <tr><td class="row-lbl">1</td><td>$367,562</td><td>70.0%</td><td>$257,293</td><td>$216,126</td><td>$44,107</td><td class="pos">$172,019</td></tr>
+        <tr><td class="row-lbl">2</td><td>$521,938</td><td>68.0%</td><td>$354,918</td><td>$298,131</td><td>$52,194</td><td class="pos">$245,937</td></tr>
+        <tr><td class="row-lbl">3</td><td>$626,326</td><td>66.0%</td><td>$413,375</td><td>$347,235</td><td>$50,106</td><td class="pos">$297,129</td></tr>
+        <tr><td class="row-lbl">4</td><td>$726,538</td><td>55.0%</td><td>$399,596</td><td>$335,660</td><td>$39,960</td><td class="pos">$295,701</td></tr>
+        <tr><td class="row-lbl">5</td><td>$806,457</td><td>50.0%</td><td>$403,228</td><td>$338,712</td><td>$36,291</td><td class="pos">$302,421</td></tr>
+        <tr><td class="row-lbl">6</td><td>$879,038</td><td>50.0%</td><td>$439,519</td><td>$362,164</td><td>$37,008</td><td class="pos">$325,156</td></tr>
+        <tr><td class="row-lbl">7</td><td>$953,053</td><td>45.0%</td><td>$428,874</td><td>$346,530</td><td>$33,976</td><td class="pos">$312,554</td></tr>
+        <tr><td class="row-lbl">8</td><td>$1,021,006</td><td>40.0%</td><td>$408,402</td><td>$323,455</td><td>$29,813</td><td class="pos">$293,641</td></tr>
+        <tr><td class="row-lbl">9</td><td>$1,080,632</td><td>40.0%</td><td>$432,253</td><td>$335,428</td><td>$24,584</td><td class="pos">$310,844</td></tr>
+        <tr><td class="row-lbl">10</td><td>$1,129,801</td><td>40.0%</td><td>$451,920</td><td>$343,460</td><td>$25,703</td><td class="pos">$317,757</td></tr>
+        <tr class="hl-band"><td class="row-lbl">Terminal</td><td>$1,181,207</td><td>40.0%</td><td>$472,483</td><td>$359,087</td><td>$81,692</td><td class="pos">$277,395</td></tr>
+      </table>
+    </div>
+    <p class="caption">All figures in US$ millions except per-share and percentage data. FCFF stays positive throughout — operating margin compresses from 70% to 40% as AI training saturates, while reinvestment follows a bell-curve that peaks early to secure supply.</p>
+
+    <!-- THE VALUE -->
+    <div class="dmod-band" style="border:1.5px solid var(--specula-deep);border-bottom:none">The Value</div>
+    <div class="dmod-value">
+      <table>
+        <tr><td class="vlbl">Terminal value</td><td class="vfig">$8,040,425</td></tr>
+        <tr><td class="vlbl">PV (terminal value)</td><td class="vfig">$3,281,574</td></tr>
+        <tr><td class="vlbl">PV (cash flows, next 10 years)</td><td class="vfig">$1,727,459</td></tr>
+        <tr><td class="vlbl">Value of operating assets</td><td class="vfig">$5,009,033</td></tr>
+        <tr><td class="vlbl">Adjustment for distress <span class="aside">probability of failure = 0.00%</span></td><td class="vfig">$0</td></tr>
+        <tr><td class="vlbl">&minus; Debt &amp; minority interests</td><td class="vfig">$13,604</td></tr>
+        <tr><td class="vlbl">+ Cash &amp; non-operating assets <span class="aside">incl. cross-holding &amp; venture ecosystem</span></td><td class="vfig">$86,838</td></tr>
+        <tr><td class="vlbl">Value of equity</td><td class="vfig">$5,082,267</td></tr>
+        <tr><td class="vlbl">&minus; Value of equity options</td><td class="vfig">$0</td></tr>
+        <tr><td class="vlbl">Number of shares</td><td class="vfig">24,220</td></tr>
+        <tr class="final"><td class="vlbl">Value per share</td><td class="vfig">$209.84</td></tr>
+      </table>
+    </div>
+    <p class="caption">Market price at valuation date: $207.00. Implied upside to intrinsic value: approximately 1%.</p>
+  </section>
+
+  <!-- KEY ASSUMPTIONS / RISKS -->
+  <section>
+    <h2><span class="num">03</span> The Sensitive Assumptions</h2>
+    <ul class="risks">
+      <li>
+        <span class="rk">Terminal Margin</span>
+        <span class="rv">A 40% operating margin sustained to perpetuity — down from 70% today — is the central modeled call. The compression is inevitable as AI training saturates and inference competition intensifies; the floor is defensible only on the strength of the CUDA moat.</span>
+      </li>
+      <li>
+        <span class="rk">Terminal ROIC</span>
+        <span class="rv">The 20.0% steady-state return on capital is the numerical anchor of the moat, held ~12pp above the 8% cost of capital. Lower-cost custom ASICs and tech-buyer pushback are the structural threats to this excess return.</span>
+      </li>
+      <li>
+        <span class="rk">Reinvestment Path</span>
+        <span class="rv">The bell-curve peaking near $52bn by Year 2, governed by an efficient 2.0 sales-to-capital ratio, assumes capacity is built without disruption. Foundry, supply-chain or advanced-packaging bottlenecks would defer FCFF and compress value.</span>
+      </li>
+      <li>
+        <span class="rk">Hyperscaler CapEx</span>
+        <span class="rv">Because the market already prices a historic transition to a structural platform utility, the margin of safety is exceptionally thin — leaving the stock highly sensitive to operational bottlenecks or deviations in the near-term capital spending of its core hyperscaler clients.</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- COLOPHON -->
+  <div class="colophon">
+    <p class="meth"><strong>Methodology.</strong> Free cash flow to firm (FCFF) discounted at the cost of capital. R&amp;D is treated as a capital expense and reclassified into reinvestment; operating margin is therefore reported on an R&amp;D-adjusted basis. Terminal growth is anchored to the 4.55% risk-free rate. Return on capital step-downs from 63.6% to a terminal 20.0%; the operating margin compresses from 70.0% to 40.0%; the effective tax rate normalizes from 16.0% to 24.0%. The terminal cost of capital of 8.00% reflects the average for mature US companies, down from 9.97% in the near term. NVIDIA's cross-holding and venture ecosystem is captured within cash and non-operating assets; no separate adjustment for distress is applied (probability of failure = 0.00%).</p>
+    <p class="disc">This document is independent research prepared for informational purposes only. It is not investment advice, nor an offer or solicitation to buy or sell any security. Valuations are estimates based on assumptions that may prove incorrect. SPECULA is not a registered investment adviser. Readers should conduct their own analysis and consult a qualified professional before making investment decisions.</p>
+    <div class="sign">
+      <span class="wm">SPECULA</span>
+      <span class="yr">By Christopher Pérez Vega  · NVDA</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
